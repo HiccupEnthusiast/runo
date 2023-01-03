@@ -3,7 +3,7 @@ use std::{fmt::Display, io::Write, num::IntErrorKind};
 use rand::prelude::*;
 
 mod models;
-use crate::models::{create_deck, Card, CardColor, CardKind, Deck};
+use crate::models::{Card, CardColor, CardKind, Deck};
 
 #[derive(Debug, Clone)]
 struct Player {
@@ -44,7 +44,7 @@ fn check_playability(last_card: &Card, new_card: &Card) -> bool {
 }
 
 fn main() {
-    let mut deck = crate::models::create_deck();
+    let mut deck = Deck::create_deck();
     deck.shuffle(&mut thread_rng());
 
     let commands = "[D]eck, [P]layed card, Draw [C]ard, [H]elp, [E]xit";
@@ -215,7 +215,7 @@ fn main() {
         }
         if deck.len() <= 5 {
             println!("One deck has been depleted, reshufling a new one");
-            deck = create_deck()
+            deck = Deck::create_deck()
         }
     }
 }

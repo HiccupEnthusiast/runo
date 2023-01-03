@@ -62,8 +62,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "uno"
-version = "0.1.0"
+name = "runo"
+version = "0.1.1"
 dependencies = [
  "rand",
 ]
