@@ -16,14 +16,6 @@ impl Display for Player {
     }
 }
 
-fn take_cards(from: &mut Deck, number: usize) -> Deck {
-    let new_deck: Vec<Card>;
-    let size = from.len();
-
-    new_deck = from.drain(size - number..).collect();
-
-    Deck(new_deck)
-}
 fn check_playability(last_card: &Card, new_card: &Card) -> bool {
     if new_card.color == last_card.color || new_card.color == CardColor::Black {
         true
@@ -57,11 +49,11 @@ fn main() {
 
     let mut player = Player {
         name: pname.trim().to_string(),
-        deck: take_cards(&mut deck, 7),
+        deck: Deck::take_cards(&mut deck, 7),
     };
     let mut pc1 = Player {
         name: "Alice".to_string(),
-        deck: take_cards(&mut deck, 7),
+        deck: Deck::take_cards(&mut deck, 7),
     };
 
     println!("Hi {}! Your deck is: {}", player.name, player.deck);
@@ -71,7 +63,7 @@ fn main() {
         commands
     );
 
-    let mut last_card = take_cards(&mut deck, 1)[0];
+    let mut last_card = Deck::take_cards(&mut deck, 1)[0];
     println!("First card: {}", last_card);
 
     player.deck.push(Card {
@@ -104,7 +96,7 @@ fn main() {
                         "d" => println!("Your deck is: {}", player.deck),
                         "p" => println!("The last played card is: {}", last_card),
                         "c" => {
-                            let card = take_cards(&mut deck, 1)[0];
+                            let card = Deck::take_cards(&mut deck, 1)[0];
                             player.deck.push(card);
                             println!("{} drawn!", card);
                         }
@@ -135,7 +127,9 @@ fn main() {
 
         match player_card.kind {
             CardKind::Normal => (),
-            CardKind::Draw(i) => pc1.deck.append(&mut take_cards(&mut deck, i as usize)),
+            CardKind::Draw(i) => pc1
+                .deck
+                .append(&mut Deck::take_cards(&mut deck, i as usize)),
             CardKind::ChangeColor(_) => {
                 println!("What color would you like to use now? (Red, Blue, Green, Yellow)");
                 let mut pick = String::new();
@@ -170,7 +164,9 @@ fn main() {
             if check_playability(&last_card, &card) {
                 match card.kind {
                     CardKind::Normal => (),
-                    CardKind::Draw(i) => player.deck.append(&mut take_cards(&mut deck, i as usize)),
+                    CardKind::Draw(i) => player
+                        .deck
+                        .append(&mut Deck::take_cards(&mut deck, i as usize)),
                     CardKind::ChangeColor(_) => {
                         let pick = "red";
                         println!("Yppie");
@@ -198,7 +194,7 @@ fn main() {
             }
         }
         if has_to_borrow {
-            pc1.deck.push(take_cards(&mut deck, 1)[0]);
+            pc1.deck.push(Deck::take_cards(&mut deck, 1)[0]);
             println!("({}){} draws a card", pc1.deck.len(), pc1.name);
         }
 

@@ -57,6 +57,14 @@ impl Deck {
 
         Deck(deck)
     }
+    pub fn take_cards(from: &mut Deck, number: usize) -> Deck {
+        let new_deck: Vec<Card>;
+        let size = from.len();
+
+        new_deck = from.drain(size - number..).collect();
+
+        Deck(new_deck)
+    }
 }
 impl Display for Deck {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
