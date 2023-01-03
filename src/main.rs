@@ -16,25 +16,6 @@ impl Display for Player {
     }
 }
 
-fn check_playability(last_card: &Card, new_card: &Card) -> bool {
-    if new_card.color == last_card.color || new_card.color == CardColor::Black {
-        true
-    } else if new_card.number == last_card.number {
-        match new_card.number {
-            Some(_) => true,
-            None => {
-                if new_card.kind == last_card.kind {
-                    true
-                } else {
-                    false
-                }
-            }
-        }
-    } else {
-        false
-    }
-}
-
 fn main() {
     let mut deck = Deck::create_deck();
     deck.shuffle(&mut thread_rng());
@@ -116,7 +97,7 @@ fn main() {
                 continue;
             }
         };
-        if !check_playability(&last_card, &player_card) {
+        if !Card::check_playability(&last_card, &player_card) {
             println!("{} can't be played on {}", player_card, last_card);
             continue;
         }
@@ -161,7 +142,7 @@ fn main() {
 
         let mut has_to_borrow = false;
         for (i, card) in pc1.deck.iter().enumerate() {
-            if check_playability(&last_card, &card) {
+            if Card::check_playability(&last_card, &card) {
                 match card.kind {
                     CardKind::Normal => (),
                     CardKind::Draw(i) => player

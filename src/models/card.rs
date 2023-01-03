@@ -23,6 +23,27 @@ pub enum CardColor {
     Black,
 }
 
+impl Card {
+    pub fn check_playability(last_card: &Card, new_card: &Card) -> bool {
+        if new_card.color == last_card.color || new_card.color == CardColor::Black {
+            true
+        } else if new_card.number == last_card.number {
+            match new_card.number {
+                Some(_) => true,
+                None => {
+                    if new_card.kind == last_card.kind {
+                        true
+                    } else {
+                        false
+                    }
+                }
+            }
+        } else {
+            false
+        }
+    }
+}
+
 impl Display for Card {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
