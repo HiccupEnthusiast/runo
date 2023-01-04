@@ -1,3 +1,4 @@
+use colored::Colorize;
 use std::fmt::Display;
 
 #[derive(Debug, Clone, Copy)]
@@ -46,9 +47,12 @@ impl Card {
 
 impl Display for Card {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}{:?}{}card",
+        let number = match self.number {
+            Some(i) => format!(" {} ", i).cyan(),
+            None => " ".white(),
+        };
+        let base = format!(
+            "{}{}{}card",
             match self.kind {
                 CardKind::Normal => "".to_string(),
                 CardKind::Draw(i) => format!("+{} ", i),
@@ -57,10 +61,45 @@ impl Display for Card {
                 CardKind::Skip => "Skip ".to_string(),
             },
             self.color,
-            match self.number {
-                Some(i) => format!(" {} ", i),
-                None => " ".to_string(),
-            }
-        )
+            number,
+        );
+        let base = match self.color {
+            CardColor::Red => base.red(),
+            CardColor::Blue => base.blue(),
+            CardColor::Green => base.green(),
+            CardColor::Yellow => base.yellow(),
+            CardColor::Black => base.white(),
+        };
+
+        write!(f, "{}", base)
+
+        // write!(
+        // f,
+        // "{}{}{}card",
+        // match self.kind {
+        // CardKind::Normal => "".to_string(),
+        // CardKind::Draw(i) => format!("+{} ", i),
+        // CardKind::ChangeColor(_) => "Wild ".to_string(),
+        // CardKind::Reverse => "Reverse ".to_string(),
+        // CardKind::Skip => "Skip ".to_string(),
+        // },
+        // self.color,
+        // match self.number {
+        // Some(i) => format!(" {} ", i).cyan(),
+        // None => " ".white(),
+        // },
+        // )
+    }
+}
+impl Display for CardColor {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let out = match self {
+            Self::Red => "Red".red(),
+            Self::Blue => "Blue".blue(),
+            Self::Green => "Green".green(),
+            Self::Yellow => "Yellow".yellow(),
+            Self::Black => "Black".white(),
+        };
+        write!(f, "{}", out)
     }
 }

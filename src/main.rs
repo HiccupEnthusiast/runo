@@ -1,5 +1,7 @@
 use std::{fmt::Display, io::Write, num::IntErrorKind};
 
+use colored::ColoredString;
+use colored::Colorize;
 use rand::prelude::*;
 
 mod models;
@@ -7,33 +9,38 @@ use crate::models::{Card, CardColor, CardKind, Deck};
 
 #[derive(Debug, Clone)]
 struct Player {
-    name: String,
+    name: ColoredString,
     deck: Deck,
 }
 impl Display for Player {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}: {}", self.name, self.deck)
+        write!(f, "({}){}: {}", self.deck.len(), self.name, self.deck)
     }
 }
 
 fn main() {
+    #[cfg(target_os = "windows")]
+    {
+        colored::control::set_virtual_terminal(true).unwrap();
+    }
+
     let mut deck = Deck::create_deck();
     deck.shuffle(&mut thread_rng());
 
-    let commands = "[D]eck, [P]layed card, Draw [C]ard, [H]elp, [E]xit";
+    let commands = "[D]eck, [P]layed card, Draw [C]ard, [H]elp, [E]xit".magenta();
 
-    println!("Enter your nickname: ");
+    println!("{}", "Enter your nickname: ".bright_green());
     let mut pname = String::new();
     std::io::stdin()
         .read_line(&mut pname)
         .expect("Error while reading the line");
 
     let mut player = Player {
-        name: pname.trim().to_string(),
+        name: pname.trim().to_string().cyan(),
         deck: Deck::take_cards(&mut deck, 7),
     };
     let mut pc1 = Player {
-        name: "Alice".to_string(),
+        name: "Alice".to_string().red(),
         deck: Deck::take_cards(&mut deck, 7),
     };
 
@@ -47,13 +54,8 @@ fn main() {
     let mut last_card = Deck::take_cards(&mut deck, 1)[0];
     println!("First card: {}", last_card);
 
-    player.deck.push(Card {
-        kind: CardKind::ChangeColor(CardColor::Black),
-        color: CardColor::Black,
-        number: None,
-    });
     loop {
-        print!("{}: ", player.name);
+        print!("({}){}: ", player.deck.len(), player.name);
         std::io::stdout()
             .flush()
             .expect("Error while flushing stdout");
